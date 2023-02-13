@@ -4,7 +4,7 @@ import ellipsize from 'ellipsize';
 
 const MAX_CHAR_COUNT = 35;
 const MIN_NODE_WIDTH = 50;
-const DEFAULT_NODE_HEIGHT = 50;
+const MIN_NODE_HEIGHT = 50;
 const NODE_PADDING = 30;
 const ICON_PADDING = 10;
 
@@ -22,10 +22,10 @@ export function measureText(text: string) {
 }
 
 export function parsePadding(padding: NodeData['nodePadding']) {
-  let top = 50;
-  let right = 50;
-  let bottom = 50;
-  let left = 50;
+  let top = NODE_PADDING;
+  let right = NODE_PADDING;
+  let bottom = NODE_PADDING;
+  let left = NODE_PADDING;
 
   if (Array.isArray(padding)) {
     if (padding.length === 2) {
@@ -55,37 +55,41 @@ export function parsePadding(padding: NodeData['nodePadding']) {
 }
 
 export function formatText(node: NodeData) {
-  const text = node.text ? ellipsize(node.text, MAX_CHAR_COUNT) : node.text;
+  const maxCharCount = node.maxCharCount || MAX_CHAR_COUNT;
+  const text = node.text ? ellipsize(node.text, maxCharCount) : node.text;
 
   const labelDim = measureText(text);
   const nodePadding = parsePadding(node.nodePadding);
 
   let width = node.width;
+  let minWidth = node.minWidth || MIN_NODE_WIDTH
+  let iconPadding = node.iconPadding || ICON_PADDING
   if (width === undefined) {
     if (text && node.icon) {
-      width = labelDim.width + node.icon.width + NODE_PADDING + ICON_PADDING;
+      width = labelDim.width + node.icon.width + nodePadding.left + nodePadding.right + iconPadding;
     } else {
       if (text) {
-        width = labelDim.width + NODE_PADDING;
+        width = labelDim.width + nodePadding.left + nodePadding.right;
       } else if (node.icon) {
-        width = node.icon.width + NODE_PADDING;
+        width = node.icon.width + nodePadding.left + nodePadding.right;
       }
 
-      width = Math.max(width, MIN_NODE_WIDTH);
+      width = Math.max(width, minWidth);
     }
   }
 
   let height = node.height;
+  let minHeight = node.minHeight || MIN_NODE_HEIGHT
   if (height === undefined) {
     if (text && node.icon) {
       height = labelDim.height + node.icon.height;
     } else if (text) {
-      height = labelDim.height + NODE_PADDING;
+      height = labelDim.height + nodePadding.top + nodePadding.bottom;
     } else if (node.icon) {
-      height = node.icon.height + NODE_PADDING;
+      height = node.icon.height + nodePadding.top + nodePadding.bottom;
     }
 
-    height = Math.max(height, DEFAULT_NODE_HEIGHT);
+    height = Math.max(height, minHeight);
   }
 
   return {

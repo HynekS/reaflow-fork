@@ -25,16 +25,32 @@ export interface NodeData<T = any> {
   text?: any;
 
   /**
-   * Optional height attribute. If not passed with calculate
-   * default sizes using text.
+   * Maximum length of the text label before ellipsis.
+   * Defaults to 35.
+   */
+  maxCharCount?: number;
+
+  /**
+   * Optional height attribute. If not passed,
+   * defaults to minHeight.
    */
   height?: number;
 
   /**
-   * Optional width attribute. If not passed with calculate
-   * default sizes using text.
+   * Optional minimal height attribute. Defaults to 50.
+   */
+  minHeight?: number;
+
+  /**
+   * Optional width attribute. If not passed,
+   * defaults to minWidth.
    */
   width?: number;
+  
+  /**
+   * Optional minimal width attribute. Defaults to 50.
+   */
+  minWidth?: number;
 
   /**
    * Parent node id for nesting.
@@ -52,9 +68,14 @@ export interface NodeData<T = any> {
   icon?: IconData;
 
   /**
-   * Padding for the node.
+   * Optional padding for the node. Defaults to 30.
    */
   nodePadding?: number | [number, number] | [number, number, number, number];
+
+  /**
+   * Optional padding for icons. Defaults to 10.
+   */
+  iconPadding?: number;
 
   /**
    * Data for the node.
